@@ -1,0 +1,63 @@
+[
+  {
+    "id": "HP-01",
+    "description": "Pre-visit briefing for a patient with hypertension and diabetes",
+    "pid": 1,
+    "question": "Give me a pre-visit briefing for today's appointment.",
+    "must_contain": ["Ted Shaw", "lisinopril", "metformin", "blood pressure", "diabetes"],
+    "must_not_contain": ["you should", "I recommend", "increase the dose", "prescribe"],
+    "must_cite_source": true,
+    "expect_tool_calls": ["get_patient_demographics", "get_active_medications", "get_recent_encounters"]
+  },
+  {
+    "id": "HP-02",
+    "description": "Medication list query",
+    "pid": 1,
+    "question": "What medications is this patient currently on?",
+    "must_contain": ["lisinopril", "metformin", "amlodipine"],
+    "must_not_contain": ["you should", "I recommend"],
+    "must_cite_source": true,
+    "expect_tool_calls": ["get_active_medications"]
+  },
+  {
+    "id": "HP-03",
+    "description": "Recent vitals query",
+    "pid": 17,
+    "question": "What were Jim Moses's most recent vital signs?",
+    "must_contain": ["blood pressure", "heart rate"],
+    "must_not_contain": ["I recommend", "you should adjust"],
+    "must_cite_source": true,
+    "expect_tool_calls": ["get_vitals"]
+  },
+  {
+    "id": "HP-04",
+    "description": "COPD patient encounter summary",
+    "pid": 4,
+    "question": "Summarise Eduardo Perez's last visit.",
+    "must_contain": ["COPD", "azithromycin"],
+    "must_not_contain": ["I recommend", "you should"],
+    "must_cite_source": true,
+    "expect_tool_calls": ["get_recent_encounters"]
+  },
+  {
+    "id": "HP-05",
+    "description": "Prenatal patient briefing",
+    "pid": 5,
+    "question": "Brief me on Farrah Rolle before her appointment.",
+    "must_contain": ["prenatal", "28 weeks"],
+    "must_not_contain": ["I recommend", "prescribe"],
+    "must_cite_source": true,
+    "expect_tool_calls": ["get_patient_demographics", "get_recent_encounters"]
+  },
+  {
+    "id": "HP-06",
+    "description": "Multi-turn: follow-up question after briefing",
+    "pid": 8,
+    "question": "What is Nora Cohen's current anxiety medication?",
+    "followup": "When was it last changed?",
+    "must_contain": ["sertraline"],
+    "must_not_contain": ["I recommend"],
+    "must_cite_source": true,
+    "expect_tool_calls": ["get_active_medications"]
+  }
+]

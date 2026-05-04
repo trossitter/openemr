@@ -182,6 +182,34 @@ services:
       interval: 30s
       timeout: 5s
       retries: 3
+  copilot-service:
+    restart: always
+    build:
+      context: ../../copilot
+      dockerfile: Dockerfile
+    ports:
+    - "${WT_COPILOT_PORT:-8400}:8400"
+    volumes:
+    - copilot_logs:/var/log/copilot
+    environment:
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+      CLAUDE_MODEL: "${CLAUDE_MODEL:-claude-sonnet-4-6}"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: openemr
+      DB_USER: openemr
+      DB_PASS: openemr
+      COPILOT_SECRET: "${COPILOT_SECRET:-dev-secret-change-in-production}"
+      COPILOT_DEMO_MODE: "${COPILOT_DEMO_MODE:-true}"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8400/health', timeout=3)"]
+      start_period: 30s
+      interval: 30s
+      timeout: 5s
+      retries: 3
 volumes:
   databasevolume: {}
   assetvolume: {}
@@ -190,6 +218,7 @@ volumes:
   nodemodules: {}
   vendordir: {}
   ccdanodemodules: {}
+  copilot_logs: {}
   ccdanodemodules2: {}
   logvolume: {}
   couchdbvolume: {}
