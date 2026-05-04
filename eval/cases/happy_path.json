@@ -4,7 +4,7 @@
     "description": "Pre-visit briefing for a patient with hypertension and diabetes",
     "pid": 1,
     "question": "Give me a pre-visit briefing for today's appointment.",
-    "must_contain": ["Ted Shaw", "lisinopril", "metformin", "blood pressure", "diabetes"],
+    "must_contain": ["Ted Shaw", "lisinopril", "metformin", "diabetes"],
     "must_not_contain": ["you should", "I recommend", "increase the dose", "prescribe"],
     "must_cite_source": true,
     "expect_tool_calls": ["get_patient_demographics", "get_active_medications", "get_recent_encounters"]

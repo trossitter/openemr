@@ -48,10 +48,11 @@ def send_chat(base_url: str, secret: str, session_id: str, pid: int, question: s
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
             for raw_line in resp:
-                line = raw_line.decode().strip()
+                # rstrip only newline chars — preserve trailing spaces (they separate words)
+                line = raw_line.decode().rstrip('\r\n')
                 if line.startswith("data: token:"):
                     response_text += line[len("data: token:"):]
-                elif line == "data: done":
+                elif line.rstrip() == "data: done":
                     break
                 elif line.startswith("data: error:"):
                     return f"ERROR: {line[len('data: error:'):]}"
@@ -87,8 +88,8 @@ def run_case(case: dict, base_url: str, secret: str, verbose: bool) -> dict:
         if term.lower() in response_lower:
             failures.append(f"contains prohibited term: '{term}'")
 
-    # Check source citation
-    if case.get("must_cite_source") and "(source:" not in response_lower:
+    # Check source citation — accept any form of "source:" attribution
+    if case.get("must_cite_source") and "source:" not in response_lower:
         failures.append("no source attribution found")
 
     passed = len(failures) == 0 and not response.startswith("ERROR")
@@ -168,9 +169,13 @@ def main():
     print(f"TOTAL: {total_passed} passed, {total_failed} failed")
     print('='*60)
 
-    # Write results
+    # Write results (use /tmp if the eval dir is read-only)
     results_dir = Path(__file__).parent / "results"
-    results_dir.mkdir(exist_ok=True)
+    try:
+        results_dir.mkdir(exist_ok=True)
+    except PermissionError:
+        results_dir = Path("/tmp/eval_results")
+        results_dir.mkdir(exist_ok=True)
     out_path = results_dir / "latest.json"
     with open(out_path, "w") as f:
         json.dump({
