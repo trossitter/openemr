@@ -9,13 +9,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy source
 COPY . .
 
-# Create log directory
-RUN mkdir -p /var/log/copilot
+# Create dirs and make entrypoint executable before dropping privileges
+RUN mkdir -p /var/log/copilot /data/chroma && chmod +x entrypoint.sh
 
 # Run as non-root
-RUN useradd -m copilot && chown -R copilot /app /var/log/copilot
+RUN useradd -m copilot && chown -R copilot /app /var/log/copilot /data/chroma
 USER copilot
 
 EXPOSE 8400
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8400", "--log-level", "warning"]
+CMD ["./entrypoint.sh"]

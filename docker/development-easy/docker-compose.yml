@@ -191,6 +191,7 @@ services:
     - "${WT_COPILOT_PORT:-8400}:8400"
     volumes:
     - copilot_logs:/var/log/copilot
+    - chromavolume:/data/chroma
     environment:
       ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
       CLAUDE_MODEL: "${CLAUDE_MODEL:-claude-sonnet-4-6}"
@@ -201,6 +202,9 @@ services:
       DB_PASS: openemr
       COPILOT_SECRET: "${COPILOT_SECRET:-dev-secret-change-in-production}"
       COPILOT_DEMO_MODE: "${COPILOT_DEMO_MODE:-true}"
+      COHERE_API_KEY: "${COHERE_API_KEY}"
+      CHROMA_PERSIST_DIR: "${CHROMA_PERSIST_DIR:-/data/chroma}"
+      OPENEMR_BASE_URL: "http://openemr:80"
     depends_on:
       mysql:
         condition: service_healthy
@@ -219,6 +223,7 @@ volumes:
   vendordir: {}
   ccdanodemodules: {}
   copilot_logs: {}
+  chromavolume: {}
   ccdanodemodules2: {}
   logvolume: {}
   couchdbvolume: {}
