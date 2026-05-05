@@ -26,7 +26,7 @@ from typing_extensions import TypedDict
 from config import ANTHROPIC_API_KEY, CLAUDE_MODEL
 from ingest import attach_and_extract
 from observability import log_graph_handoff
-from rag import GuidelineRetriever
+from retriever import search_guidelines
 
 
 # ── State ──────────────────────────────────────────────────────────────────────
@@ -145,12 +145,11 @@ def evidence_retriever(state: GraphState) -> dict:
         "retrieving guideline evidence",
         f"query_preview={state['query'][:100]}",
     )
-    retriever = GuidelineRetriever()
-    chunks = retriever.retrieve(state["query"])
+    chunks = search_guidelines(state["query"])
     serialized = [
         {
             "text": c.text,
-            "relevance_score": c.relevance_score,
+            "relevance_score": c.score,
             "citation": c.citation.model_dump(),
         }
         for c in chunks

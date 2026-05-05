@@ -223,23 +223,19 @@ def attach_and_extract(
     if not path.exists():
         raise FileNotFoundError(f"File not found: {file_path}")
 
-    if DEMO_MODE:
-        raise ValueError(
-            "COPILOT_DEMO_MODE is enabled — FHIR writes are blocked. "
-            "Set COPILOT_DEMO_MODE=false after executing a BAA with Anthropic."
-        )
-
     raw = _call_claude_vision(path, doc_type)
     payload = json.loads(_strip_fences(raw))
 
-    token = _get_openemr_token()
-
     if doc_type == "lab_pdf":
         results = [LabResult.model_validate(item) for item in payload]
-        for lab in results:
-            _write_observation(patient_id, lab, token)
+        if not DEMO_MODE:
+            token = _get_openemr_token()
+            for lab in results:
+                _write_observation(patient_id, lab, token)
         return results
 
     intake = IntakeForm.model_validate(payload)
-    _write_patient_update(patient_id, intake, token)
+    if not DEMO_MODE:
+        token = _get_openemr_token()
+        _write_patient_update(patient_id, intake, token)
     return intake
