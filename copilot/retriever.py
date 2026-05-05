@@ -1,186 +1,230 @@
-"""Hybrid RAG retriever: BM25 (sparse) + ChromaDB (dense) → Cohere rerank.
+"""
+Hybrid RAG retriever for clinical guidelines.
 
-Usage:
-    from retriever import get_retriever
-    chunks = get_retriever().retrieve("HbA1c target for T2DM patient", final_k=3)
+Pipeline:
+  1. BM25 sparse retrieval  (rank-bm25, in-memory)
+  2. Dense vector retrieval (ChromaDB, persistent)
+  3. Cohere Rerank on merged candidates
+  4. Return top-N RetrievedChunk objects with Citation metadata
+
+Entry points:
+  search_guidelines(query)   — used by the evidence-retriever worker
+  chunk_and_index(...)       — used by index_corpus.py at build time
 """
 from __future__ import annotations
 
 import os
-from typing import TypedDict
+import re
+from dataclasses import dataclass
+from typing import Optional
 
 import chromadb
 import cohere
 from rank_bm25 import BM25Okapi
 
-from config import ANTHROPIC_API_KEY  # noqa: F401 — ensure config is loaded first
+from schemas import Citation
 
-COHERE_API_KEY: str = os.environ.get("COHERE_API_KEY", "")
-CHROMA_PERSIST_DIR: str = os.environ.get("CHROMA_PERSIST_DIR", "/tmp/copilot-chroma")
+COHERE_API_KEY = os.environ.get("COHERE_API_KEY", "")
+CHROMA_PERSIST_DIR = os.environ.get("CHROMA_PERSIST_DIR", "/data/chroma")
+COLLECTION_NAME = "clinical_guidelines"
 
-_EMBED_MODEL = "embed-english-v3.0"
-_RERANK_MODEL = "rerank-english-v3.0"
-_COLLECTION_NAME = "guidelines"
+CHUNK_SIZE = 400      # approximate words per chunk
+CHUNK_OVERLAP = 80
+CANDIDATE_K = 20      # candidates fetched from each retriever before rerank
+RERANK_TOP_N = 3      # chunks fed to the answer model
 
 
-class GuidelineChunk(TypedDict):
+@dataclass
+class RetrievedChunk:
+    chunk_id: str
     text: str
-    source_type: str
-    source_id: str
-    page_or_section: str
-    field_or_chunk_id: str
+    source_id: str    # e.g. "ada-2024", "jnc8", "uspstf"
+    section: str
+    score: float
+    citation: Citation
+
+
+def _tokenize(text: str) -> list[str]:
+    return re.sub(r"[^a-zA-Z0-9]", " ", text.lower()).split()
+
+
+def _chunk_text(
+    text: str,
+    source_id: str,
+    section: str,
+    size: int = CHUNK_SIZE,
+    overlap: int = CHUNK_OVERLAP,
+) -> list[dict]:
+    words = text.split()
+    chunks: list[dict] = []
+    i = 0
+    while i < len(words):
+        window = words[i : i + size]
+        chunks.append({
+            "id": f"{source_id}_{len(chunks):04d}",
+            "text": " ".join(window),
+            "metadata": {
+                "source_id": source_id,
+                "section": section,
+                "chunk_index": len(chunks),
+            },
+        })
+        i += size - overlap
+    return chunks
 
 
 class HybridRetriever:
-    """
-    Retrieves guideline evidence with BM25 + dense vector search merged by union,
-    then reranked by Cohere. Patient data is never indexed here.
-    """
-
-    def __init__(self) -> None:
-        if not COHERE_API_KEY:
-            raise RuntimeError(
-                "COHERE_API_KEY is not set. Get a free key at cohere.com."
-            )
-        self._co = cohere.Client(api_key=COHERE_API_KEY)
-        chroma = chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
-        # No EmbeddingFunction passed — we embed manually so we can use
-        # different Cohere input_type for documents vs queries.
-        self._col = chroma.get_or_create_collection(
-            name=_COLLECTION_NAME,
+    def __init__(self, persist_dir: str = CHROMA_PERSIST_DIR) -> None:
+        self._chroma = chromadb.PersistentClient(path=persist_dir)
+        self._collection = self._chroma.get_or_create_collection(
+            COLLECTION_NAME,
             metadata={"hnsw:space": "cosine"},
         )
-        self._chunks: list[GuidelineChunk] = []
-        self._bm25: BM25Okapi | None = None
-
-    # ── Embedding helpers ──────────────────────────────────────────────────
-
-    def _embed_docs(self, texts: list[str]) -> list[list[float]]:
-        resp = self._co.embed(
-            texts=texts,
-            model=_EMBED_MODEL,
-            input_type="search_document",
+        self._bm25: Optional[BM25Okapi] = None
+        self._bm25_chunks: list[dict] = []
+        self._cohere: Optional[cohere.Client] = (
+            cohere.Client(api_key=COHERE_API_KEY) if COHERE_API_KEY else None
         )
-        return resp.embeddings
+        self._rebuild_bm25()
 
-    def _embed_query(self, text: str) -> list[float]:
-        resp = self._co.embed(
-            texts=[text],
-            model=_EMBED_MODEL,
-            input_type="search_query",
-        )
-        return resp.embeddings[0]
+    # ------------------------------------------------------------------
+    # Index management
+    # ------------------------------------------------------------------
 
-    # ── Index management ───────────────────────────────────────────────────
-
-    def build(self, chunks: list[GuidelineChunk], force: bool = False) -> None:
-        """Index chunks. If the collection already has data and force=False, reload from it."""
-        if self._col.count() > 0 and not force:
-            self._reload_from_chroma()
+    def _rebuild_bm25(self) -> None:
+        result = self._collection.get(include=["documents", "metadatas"])
+        docs = result.get("documents") or []
+        if not docs:
             return
-
-        if force and self._col.count() > 0:
-            self._col.delete(ids=self._col.get()["ids"])
-
-        texts = [c["text"] for c in chunks]
-        embeddings = self._embed_docs(texts)
-        metadatas = [{k: v for k, v in c.items() if k != "text"} for c in chunks]
-
-        self._col.add(
-            ids=[c["field_or_chunk_id"] for c in chunks],
-            documents=texts,
-            embeddings=embeddings,
-            metadatas=metadatas,
-        )
-        self._chunks = list(chunks)
-        self._bm25 = BM25Okapi([t.split() for t in texts])
-
-    def _reload_from_chroma(self) -> None:
-        """Reconstruct in-memory state from a previously persisted collection."""
-        existing = self._col.get(include=["documents", "metadatas"])
-        self._chunks = [
-            {**meta, "text": doc}  # type: ignore[misc]
-            for meta, doc in zip(existing["metadatas"], existing["documents"])
+        self._bm25_chunks = [
+            {"id": cid, "text": doc, "metadata": meta}
+            for cid, doc, meta in zip(result["ids"], docs, result["metadatas"])
         ]
-        self._bm25 = BM25Okapi([c["text"].split() for c in self._chunks])
+        self._bm25 = BM25Okapi([_tokenize(c["text"]) for c in self._bm25_chunks])
 
-    # ── Retrieval ──────────────────────────────────────────────────────────
-
-    def retrieve(
-        self,
-        query: str,
-        candidate_k: int = 10,
-        final_k: int = 3,
-    ) -> list[dict]:
-        """
-        Returns up to final_k reranked guideline chunks with citation metadata.
-
-        Each result dict has: text, source_type, source_id, page_or_section,
-        field_or_chunk_id, quote_or_value, bbox (None), rerank_score.
-        """
-        if not self._chunks or self._bm25 is None:
-            raise RuntimeError("Index is empty. Call build() before retrieve().")
-
-        n = len(self._chunks)
-        k = min(candidate_k, n)
-
-        # Dense: query ChromaDB with the pre-embedded query vector
-        q_embed = self._embed_query(query)
-        dense_result = self._col.query(
-            query_embeddings=[q_embed],
-            n_results=k,
-            include=["metadatas"],
+    def index_documents(self, chunks: list[dict]) -> int:
+        """Upsert chunks into ChromaDB + rebuild BM25. Returns count of new chunks added."""
+        if not chunks:
+            return 0
+        existing = set(self._collection.get(ids=[c["id"] for c in chunks])["ids"])
+        new = [c for c in chunks if c["id"] not in existing]
+        if not new:
+            return 0
+        self._collection.add(
+            ids=[c["id"] for c in new],
+            documents=[c["text"] for c in new],
+            metadatas=[c["metadata"] for c in new],
         )
-        dense_ids: set[str] = set(dense_result["ids"][0])
+        self._rebuild_bm25()
+        return len(new)
 
-        # Sparse: BM25 top-k by score
-        bm25_scores = self._bm25.get_scores(query.split())
-        sparse_ids: set[str] = {
-            self._chunks[i]["field_or_chunk_id"]
-            for i, _ in sorted(enumerate(bm25_scores), key=lambda x: x[1], reverse=True)[:k]
-        }
+    # ------------------------------------------------------------------
+    # Retrieval
+    # ------------------------------------------------------------------
 
-        # Union of dense + sparse candidates
-        candidate_ids = dense_ids | sparse_ids
-        candidates = [c for c in self._chunks if c["field_or_chunk_id"] in candidate_ids]
+    def _dense(self, query: str, k: int) -> list[dict]:
+        count = self._collection.count()
+        if count == 0:
+            return []
+        results = self._collection.query(query_texts=[query], n_results=min(k, count))
+        return [
+            {"id": cid, "text": doc, "metadata": meta, "score": 1.0 - dist}
+            for cid, doc, meta, dist in zip(
+                results["ids"][0],
+                results["documents"][0],
+                results["metadatas"][0],
+                results["distances"][0],
+            )
+        ]
 
+    def _sparse(self, query: str, k: int) -> list[dict]:
+        if self._bm25 is None:
+            return []
+        scores = self._bm25.get_scores(_tokenize(query))
+        top = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:k]
+        return [
+            {**self._bm25_chunks[i], "score": float(scores[i])}
+            for i in top
+            if scores[i] > 0
+        ]
+
+    def _merge(self, dense: list[dict], sparse: list[dict]) -> list[dict]:
+        seen: dict[str, dict] = {}
+        for chunk in dense + sparse:
+            cid = chunk["id"]
+            if cid not in seen or chunk["score"] > seen[cid]["score"]:
+                seen[cid] = chunk
+        return list(seen.values())
+
+    def _rerank(self, query: str, candidates: list[dict], top_n: int) -> list[dict]:
         if not candidates:
             return []
-
-        # Rerank with Cohere
-        top_n = min(final_k, len(candidates))
-        reranked = self._co.rerank(
+        if self._cohere is None:
+            return sorted(candidates, key=lambda c: c["score"], reverse=True)[:top_n]
+        response = self._cohere.rerank(
+            model="rerank-english-v3.0",
             query=query,
             documents=[c["text"] for c in candidates],
-            model=_RERANK_MODEL,
-            top_n=top_n,
+            top_n=min(top_n, len(candidates)),
         )
-
         return [
-            {
-                "text": candidates[r.index]["text"],
-                "source_type": candidates[r.index]["source_type"],
-                "source_id": candidates[r.index]["source_id"],
-                "page_or_section": candidates[r.index]["page_or_section"],
-                "field_or_chunk_id": candidates[r.index]["field_or_chunk_id"],
-                "quote_or_value": candidates[r.index]["text"][:200],
-                "bbox": None,
-                "rerank_score": r.relevance_score,
-            }
-            for r in reranked.results
+            {**candidates[r.index], "score": float(r.relevance_score)}
+            for r in response.results
         ]
 
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
 
-# ── Module-level singleton ─────────────────────────────────────────────────
+    def search(self, query: str, top_n: int = RERANK_TOP_N) -> list[RetrievedChunk]:
+        half = CANDIDATE_K // 2
+        candidates = self._merge(self._dense(query, half), self._sparse(query, half))
+        reranked = self._rerank(query, candidates, top_n)
 
-_retriever: HybridRetriever | None = None
+        results: list[RetrievedChunk] = []
+        for item in reranked:
+            meta = item["metadata"]
+            source_id = meta.get("source_id", "unknown")
+            section = meta.get("section", "")
+            results.append(RetrievedChunk(
+                chunk_id=item["id"],
+                text=item["text"],
+                source_id=source_id,
+                section=section,
+                score=item["score"],
+                citation=Citation(
+                    source_type="guideline",
+                    source_id=source_id,
+                    page_or_section=section,
+                    field_or_chunk_id=item["id"],
+                    quote_or_value=item["text"][:200],
+                ),
+            ))
+        return results
+
+    def count(self) -> int:
+        return self._collection.count()
+
+
+# ------------------------------------------------------------------
+# Module-level singleton
+# ------------------------------------------------------------------
+
+_retriever: Optional[HybridRetriever] = None
 
 
 def get_retriever() -> HybridRetriever:
-    """Return the shared HybridRetriever, building the index on first call."""
     global _retriever
     if _retriever is None:
-        from corpus import CORPUS_CHUNKS  # lazy import to avoid circular
         _retriever = HybridRetriever()
-        _retriever.build(CORPUS_CHUNKS)
     return _retriever
+
+
+def search_guidelines(query: str, top_n: int = RERANK_TOP_N) -> list[RetrievedChunk]:
+    """Primary entry point for the evidence-retriever worker."""
+    return get_retriever().search(query, top_n)
+
+
+def chunk_and_index(source_id: str, section: str, text: str) -> int:
+    """Chunk a document section and add it to the index. Used by index_corpus.py."""
+    return get_retriever().index_documents(_chunk_text(text, source_id, section))

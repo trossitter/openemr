@@ -1,0 +1,83 @@
+# JNC 8 Hypertension Guidelines
+# Source: James PA et al. JAMA. 2014;311(5):507-520
+# 2014 Evidence-Based Guideline for the Management of High Blood Pressure in Adults
+# Relevant demo patients: Ted Shaw (HTN+T2DM), Jim Moses (post-MI)
+
+## TABLE 1: BLOOD PRESSURE THRESHOLDS AND GOALS
+
+In patients aged 60 years or older, initiate pharmacologic treatment to lower blood pressure at systolic blood pressure (SBP) ≥ 150 mmHg or diastolic blood pressure (DBP) ≥ 90 mmHg. Treat to a goal SBP < 150 mmHg and a goal DBP < 90 mmHg.
+
+In patients younger than 60 years, initiate pharmacologic treatment to lower blood pressure at DBP ≥ 90 mmHg. Treat to a goal DBP < 90 mmHg.
+
+In patients younger than 60 years, initiate pharmacologic treatment to lower blood pressure at SBP ≥ 140 mmHg. Treat to a goal SBP < 140 mmHg.
+
+In patients aged 18 years or older with chronic kidney disease (CKD), initiate pharmacologic treatment to lower blood pressure at SBP ≥ 140 mmHg or DBP ≥ 90 mmHg. Treat to a goal SBP < 140 mmHg and goal DBP < 90 mmHg.
+
+In patients aged 18 years or older with diabetes, initiate pharmacologic treatment to lower blood pressure at SBP ≥ 140 mmHg or DBP ≥ 90 mmHg. Treat to a goal SBP < 140 mmHg and goal DBP < 90 mmHg.
+
+## TABLE 2: FIRST-LINE DRUG CLASSES FOR HYPERTENSION
+
+For the general nonblack population, including those with diabetes, initial antihypertensive treatment should include a thiazide-type diuretic, calcium channel blocker (CCB), ACE inhibitor, or angiotensin receptor blocker (ARB).
+
+For the general black population, including those with diabetes, initial antihypertensive treatment should include a thiazide-type diuretic or CCB.
+
+In patients aged 18 years or older with CKD and hypertension, initial or add-on antihypertensive treatment should include an ACE inhibitor or ARB (regardless of race or diabetes status).
+
+## TABLE 3: DRUG SELECTION AND TITRATION STRATEGY
+
+Strategy A (Preferred): Start one first-line drug; titrate to maximum dose before adding second drug.
+
+Strategy B (Alternative): Start one first-line drug; add second drug before reaching maximum dose of initial drug.
+
+Strategy C (Alternative): Start with two first-line drugs simultaneously, either as separate pills or as a fixed-dose combination.
+
+If goal blood pressure is not reached with three drugs, use antihypertensive drugs from other classes. If ACE inhibitor or ARB is selected, do NOT use in combination with each other.
+
+Referral to physician with expertise in hypertension care is recommended if the target blood pressure cannot be achieved using the above strategy or for patients in whom further workup or management is needed.
+
+## TABLE 4: SELECTION OF ANTIHYPERTENSIVE DRUG CLASSES
+
+Thiazide diuretics: Recommended as initial therapy for most patients without compelling indications for another agent. Chlorthalidone preferred over hydrochlorothiazide.
+
+Calcium channel blockers: Effective for most patient populations; particularly useful for black patients. Amlodipine is commonly used long-acting agent.
+
+ACE inhibitors: Preferred for patients with CKD (with or without diabetes) due to renoprotective effects. Avoid in pregnancy. Monitor potassium and creatinine.
+
+ARBs: Alternative to ACE inhibitors for patients who cannot tolerate ACE inhibitors (e.g., cough). Similar renoprotective benefits. Avoid in pregnancy.
+
+Beta-blockers: Not recommended as first-line therapy unless compelling indication exists (e.g., angina, post-MI, heart failure with reduced ejection fraction, certain arrhythmias).
+
+## TABLE 5: SPECIAL POPULATIONS
+
+Patients with diabetes:
+- Blood pressure goal: SBP < 140 mmHg and DBP < 90 mmHg
+- First-line agents: thiazide diuretic, CCB, ACE inhibitor, or ARB
+- If diabetic nephropathy (albuminuria), ACE inhibitor or ARB is preferred
+
+Patients with CKD:
+- Blood pressure goal: SBP < 140 mmHg and DBP < 90 mmHg
+- ACE inhibitor or ARB recommended regardless of race or presence of diabetes
+
+Post-MI patients:
+- Beta-blockers and ACE inhibitors (or ARBs if ACE-intolerant) are beneficial
+- Aldosterone antagonists if already on ACE inhibitor/ARB plus beta-blocker, have EF ≤ 40%, no hyperkalemia or significant renal dysfunction
+
+Heart failure with reduced ejection fraction:
+- ACE inhibitors (or ARBs), beta-blockers, and aldosterone antagonists reduce mortality
+- Diuretics for symptomatic management
+
+Elderly patients (≥ 60 years):
+- Goal SBP < 150 mmHg, DBP < 90 mmHg per JNC 8
+- High risk of orthostatic hypotension; start low, go slow
+- Avoid excessive lowering of blood pressure
+
+## IMPLEMENTATION RECOMMENDATIONS
+
+Monthly follow-up until blood pressure goal is met. Once goal is met, follow-up every 3–6 months.
+
+Lifestyle modifications should be encouraged in all patients:
+- Weight reduction if overweight or obese
+- DASH eating plan
+- Dietary sodium restriction to less than 2400 mg/day
+- Aerobic physical activity 3–4 sessions per week, 40 minutes per session
+- Moderation of alcohol consumption

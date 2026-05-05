@@ -1,0 +1,78 @@
+# ADA Standards of Medical Care in Diabetes 2024
+# Source: Diabetes Care, Volume 47, Supplement 1, January 2024
+# Sections: Summary of Revisions and key recommendation tables
+# Relevant demo patients: Ted Shaw (T2DM, HbA1c monitoring)
+
+## GLYCEMIC TARGETS
+
+Glycemic targets should be individualized based on patient characteristics.
+For most nonpregnant adults with type 2 diabetes, the American Diabetes Association recommends:
+- HbA1c target: less than 7% (53 mmol/mol) for many nonpregnant adults
+- More stringent target (less than 6.5%) may be appropriate for patients with short disease duration, long life expectancy, and no significant cardiovascular disease, if achievable without significant hypoglycemia
+- Less stringent target (less than 8%) may be appropriate for patients with history of severe hypoglycemia, limited life expectancy, advanced complications, or extensive comorbidities
+
+Fasting plasma glucose target: 80–130 mg/dL (4.4–7.2 mmol/L)
+Peak postprandial plasma glucose (1–2 hours after meal): less than 180 mg/dL (10.0 mmol/L)
+
+## PHARMACOLOGIC THERAPY FOR TYPE 2 DIABETES
+
+Metformin, if tolerated and not contraindicated, is the preferred initial pharmacologic agent for type 2 diabetes.
+For patients with type 2 diabetes and established or high risk of atherosclerotic cardiovascular disease, heart failure, or chronic kidney disease, a GLP-1 receptor agonist or SGLT2 inhibitor with proven cardiovascular benefit is recommended.
+SGLT2 inhibitors are recommended for patients with type 2 diabetes and heart failure or chronic kidney disease to reduce risk of worsening heart failure, cardiovascular death, and CKD progression.
+
+Intensification of pharmacologic therapy:
+- If HbA1c is not at goal after 3 months, consider intensifying with a second agent
+- Choice of agent should consider cardiovascular and kidney comorbidities, hypoglycemia risk, impact on weight, cost, and patient preference
+
+## HYPERTENSION MANAGEMENT IN DIABETES
+
+Blood pressure goals in diabetes:
+- Target blood pressure: less than 130/80 mmHg for patients with diabetes and hypertension
+- Blood pressure treatment should be initiated at systolic BP ≥ 130 mmHg or diastolic BP ≥ 80 mmHg
+- ACE inhibitors or ARBs are recommended for patients with diabetes, hypertension, and albuminuria
+- Multiple drug therapy is generally required to achieve blood pressure targets
+
+## LIPID MANAGEMENT
+
+Statin therapy:
+- High-intensity statin therapy is recommended for patients with diabetes aged 40–75 years with atherosclerotic cardiovascular disease
+- Moderate-intensity statin therapy is recommended for patients with diabetes aged 40–75 years without atherosclerotic cardiovascular disease
+- For patients with LDL-C ≥ 70 mg/dL on maximally tolerated statin, ezetimibe or PCSK9 inhibitor may be added
+
+## CARDIOVASCULAR DISEASE AND RISK MANAGEMENT
+
+Aspirin therapy:
+- Low-dose aspirin (75–162 mg/day) as secondary prevention in patients with diabetes and established cardiovascular disease
+- For primary prevention, aspirin use in patients with diabetes and no established CVD is not routinely recommended but may be considered in those at high cardiovascular risk
+
+Annual lipid panel: fasting lipid profile at least annually in patients with diabetes, or more frequently if indicated.
+
+## DIABETES SCREENING AND DIAGNOSIS
+
+Criteria for diagnosis:
+- Fasting plasma glucose ≥ 126 mg/dL (7.0 mmol/L)
+- 2-hour plasma glucose ≥ 200 mg/dL (11.1 mmol/L) during OGTT
+- HbA1c ≥ 6.5% (48 mmol/mol)
+- Random plasma glucose ≥ 200 mg/dL with classic symptoms of hyperglycemia
+
+Prediabetes criteria:
+- Fasting glucose: 100–125 mg/dL (impaired fasting glucose)
+- 2-hour glucose: 140–199 mg/dL (impaired glucose tolerance)
+- HbA1c: 5.7–6.4%
+
+## MONITORING AND ASSESSMENT
+
+HbA1c testing frequency:
+- Twice yearly for patients meeting treatment goals and with stable glycemic control
+- Quarterly for patients whose therapy has changed or who are not meeting glycemic goals
+
+Kidney function monitoring:
+- Annual urine albumin-to-creatinine ratio (UACR) and estimated GFR in patients with type 2 diabetes
+- More frequent monitoring if CKD is present
+
+Foot examination: comprehensive foot exam annually, including inspection, assessment of foot pulses, and testing for loss of protective sensation.
+
+## DIABETES SELF-MANAGEMENT EDUCATION
+
+All patients with diabetes should receive diabetes self-management education and support at diagnosis and as needed thereafter.
+Key topics: healthy eating, physical activity, monitoring, medications, problem solving, healthy coping, and reducing risks.
