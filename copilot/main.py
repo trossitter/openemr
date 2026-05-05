@@ -111,7 +111,7 @@ def clear_endpoint(
     return {"cleared": True, "session_id": req.session_id}
 
 
-@app.post("/copilot/v2/query")
+@app.post("/v2/query")
 def v2_query_endpoint(
     req: V2QueryRequest,
     x_copilot_secret: str | None = Header(default=None),
