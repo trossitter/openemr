@@ -36,3 +36,7 @@ LOG_FILE = os.environ.get("LOG_FILE", "/var/log/copilot/copilot.jsonl")
 # Cost per token (claude-sonnet-4-5 pricing, USD)
 COST_PER_INPUT_TOKEN = 3.0 / 1_000_000   # $3 per 1M input tokens
 COST_PER_OUTPUT_TOKEN = 15.0 / 1_000_000  # $15 per 1M output tokens
+
+# RAG / Hybrid Retriever
+COHERE_API_KEY = os.environ.get("COHERE_API_KEY", "")
+CHROMA_PERSIST_DIR = os.environ.get("CHROMA_PERSIST_DIR", "/data/chroma")
