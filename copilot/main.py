@@ -25,6 +25,7 @@ from pydantic import BaseModel
 
 from agent import chat, clear_conversation, get_conversation_length
 from config import COPILOT_SECRET, DEMO_MODE, LOG_FILE
+from graph import run_graph
 
 app = FastAPI(
     title="Clinical Co-Pilot",
@@ -54,6 +55,14 @@ class ChatRequest(BaseModel):
 
 class ClearRequest(BaseModel):
     session_id: str
+
+
+class V2QueryRequest(BaseModel):
+    session_id: str
+    pid: int
+    query: str
+    file_path: str | None = None
+    doc_type: str | None = None  # "lab_pdf" | "intake_form"
 
 
 @app.get("/health")
@@ -100,6 +109,39 @@ def clear_endpoint(
     _require_auth(x_copilot_secret)
     clear_conversation(req.session_id)
     return {"cleared": True, "session_id": req.session_id}
+
+
+@app.post("/copilot/v2/query")
+def v2_query_endpoint(
+    req: V2QueryRequest,
+    x_copilot_secret: str | None = Header(default=None),
+):
+    """LangGraph supervisor graph: document ingestion + guideline retrieval."""
+    _require_auth(x_copilot_secret)
+
+    if not req.query.strip():
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+    if req.pid <= 0:
+        raise HTTPException(status_code=400, detail="Invalid patient ID")
+    if req.file_path and req.doc_type not in ("lab_pdf", "intake_form"):
+        raise HTTPException(
+            status_code=400,
+            detail="doc_type must be 'lab_pdf' or 'intake_form' when file_path is provided",
+        )
+
+    try:
+        result = run_graph(
+            patient_id=req.pid,
+            query=req.query,
+            file_path=req.file_path,
+            doc_type=req.doc_type,
+        )
+    except (ValueError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail="Graph execution failed") from exc
+
+    return result
 
 
 @app.get("/logs")

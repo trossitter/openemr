@@ -97,6 +97,11 @@ def log_verification(trace_id: str, passed: bool, violations: list[str]):
     })
 
 
+def log_graph_handoff(record: dict):
+    """Write a LangGraph handoff event to the observability log."""
+    _write({"event": "graph_handoff", **record})
+
+
 def log_request_complete(trace_id: str, total_ms: float, status: str):
     _write({
         "event": "request_complete",
