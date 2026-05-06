@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * Clinical Co-Pilot — Bootstrap
  *
@@ -21,7 +24,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class Bootstrap
 {
     public function __construct(
-        private EventDispatcherInterface $eventDispatcher
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {}
 
     public function subscribeToEvents(): void
