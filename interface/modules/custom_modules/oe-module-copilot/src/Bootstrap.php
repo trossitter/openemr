@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /**
  * Clinical Co-Pilot — Bootstrap
  *
@@ -15,6 +13,8 @@ declare(strict_types=1);
  *   - Teal accents for primary actions (naturally calming)
  *   - Indigo for the AI Co-Pilot panel (distinct from clinical chrome)
  */
+
+declare(strict_types=1);
 
 namespace OpenEMR\Modules\CopilotModule;
 

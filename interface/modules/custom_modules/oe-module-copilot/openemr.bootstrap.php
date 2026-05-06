@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Clinical Co-Pilot — OpenEMR Module Bootstrap
  *

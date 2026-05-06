@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Returns the current session patient PID and name as JSON.
  * Called by the Co-Pilot JavaScript panel every 3 seconds to
