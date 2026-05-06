@@ -5,13 +5,15 @@
  * detect when the physician navigates to a new patient chart.
  */
 
-// Bootstrap OpenEMR session context
 $ignoreAuth = false;
 require_once dirname(__FILE__, 5) . '/interface/globals.php';
 
+use OpenEMR\Common\Session\SessionWrapperFactory;
+
 header('Content-Type: application/json');
 
-$pid = isset($_SESSION['pid']) ? (int)$_SESSION['pid'] : null;
+$session = SessionWrapperFactory::getInstance()->getActiveSession();
+$pid = $session->get('pid') ? (int)$session->get('pid') : null;
 $name = null;
 
 if ($pid) {

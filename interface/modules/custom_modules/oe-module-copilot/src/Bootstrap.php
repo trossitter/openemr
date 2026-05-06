@@ -493,12 +493,10 @@ class Bootstrap
                             var name = data.name || ('Patient #' + data.pid);
                             document.getElementById('copilot-patient-name').textContent = name;
 
-                            // Show context strip
                             var strip = document.getElementById('copilot-context-strip');
                             strip.textContent = '📋 ' + name;
                             strip.style.display = 'block';
 
-                            // New patient — reset session
                             sessionId = 'sess_' + Math.random().toString(36).substr(2, 12);
                             resetMessages(
                                 '<div style="font-size:28px;margin-bottom:10px;">✅</div>' +
