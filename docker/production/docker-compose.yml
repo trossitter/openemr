@@ -32,6 +32,8 @@ services:
     volumes:
     - logvolume01:/var/log
     - sitevolume:/var/www/localhost/htdocs/openemr/sites
+    - ../../interface/modules/custom_modules/oe-module-copilot:/var/www/localhost/htdocs/openemr/interface/modules/custom_modules/oe-module-copilot:ro
+    - ./copilot-proxy.conf:/etc/apache2/conf.d/copilot-proxy.conf:ro
     environment:
       MYSQL_HOST: mysql
       MYSQL_ROOT_PASS: root
@@ -57,7 +59,39 @@ services:
       interval: 1m
       timeout: 5s
       retries: 3
+  copilot-service:
+    restart: always
+    build:
+      context: ../../copilot
+      dockerfile: Dockerfile
+    volumes:
+    - copilot_logs:/var/log/copilot
+    - chromavolume:/data/chroma
+    environment:
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+      CLAUDE_MODEL: "${CLAUDE_MODEL:-claude-sonnet-4-6}"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: openemr
+      DB_USER: openemr
+      DB_PASS: openemr
+      COPILOT_SECRET: "${COPILOT_SECRET}"
+      COPILOT_DEMO_MODE: "${COPILOT_DEMO_MODE:-false}"
+      COHERE_API_KEY: "${COHERE_API_KEY}"
+      CHROMA_PERSIST_DIR: "${CHROMA_PERSIST_DIR:-/data/chroma}"
+      OPENEMR_BASE_URL: "http://openemr:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8400/health', timeout=3)"]
+      start_period: 60s
+      interval: 30s
+      timeout: 5s
+      retries: 3
 volumes:
   logvolume01: {}
   sitevolume: {}
   databasevolume: {}
+  copilot_logs: {}
+  chromavolume: {}
