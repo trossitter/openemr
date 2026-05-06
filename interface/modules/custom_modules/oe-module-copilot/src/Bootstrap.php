@@ -44,34 +44,37 @@ class Bootstrap
 
         <!-- ============================================================
              CLINICAL CO-PILOT — THEME OVERRIDES
-             Biophilic palette: trust + calm + clinical clarity
+             Clinical palette: soft blues, slate grays, clean whites
              Palette:
-               --cp-nav:      #0F2A44  Deep Navy       (navbar bg)
-               --cp-panel:    #1E3A52  Panel Slate     (dropdowns/sidebar bg)
-               --cp-surface:  #F0F4F8  Surface Mist    (main content bg)
-               --cp-teal:     #0E8A8A  Teal Action     (primary buttons/links)
+               --cp-nav:      #EBF4FB  Ice Blue        (navbar bg — light, clinical)
+               --cp-nav-text: #1A3A52  Dark Slate      (navbar text on light bg)
+               --cp-panel:    #FFFFFF  Clean White     (dropdowns/sidebar bg)
+               --cp-surface:  #F5F9FC  Surface Mist    (main content bg)
+               --cp-teal:     #0A7B7B  Teal Action     (primary buttons/links)
                --cp-mint:     #22A86E  Mint Confirm    (success/active states)
                --cp-text:     #1A2733  Body Text       (primary)
                --cp-muted:    #4A5E6D  Secondary Text  (labels/metadata)
                --cp-amber:    #B45309  Amber Alert     (warnings)
-               --cp-indigo:   #3B4FBF  AI Indigo       (Co-Pilot panel header)
-               --cp-indigo-lt:#EEF0FB  Indigo Tint     (physician bubble bg)
+               --cp-indigo:   #2E6B9E  Clinical Blue   (Co-Pilot panel header)
+               --cp-indigo-lt:#E8F4FD  Sky Tint        (physician bubble bg)
         ============================================================ -->
         <style id="copilot-theme">
         /* ── Root tokens ─────────────────────────────────────────── */
         :root {
-            --cp-nav:       #0F2A44;
-            --cp-panel:     #1E3A52;
-            --cp-surface:   #F0F4F8;
-            --cp-teal:      #0E8A8A;
-            --cp-teal-dk:   #0B6E6E;
+            --cp-nav:       #EBF4FB;
+            --cp-nav-text:  #1A3A52;
+            --cp-nav-border:#C8DFF0;
+            --cp-panel:     #FFFFFF;
+            --cp-surface:   #F5F9FC;
+            --cp-teal:      #0A7B7B;
+            --cp-teal-dk:   #086363;
             --cp-mint:      #22A86E;
             --cp-text:      #1A2733;
             --cp-muted:     #4A5E6D;
             --cp-amber:     #B45309;
-            --cp-indigo:    #3B4FBF;
-            --cp-indigo-dk: #2E3E99;
-            --cp-indigo-lt: #EEF0FB;
+            --cp-indigo:    #2E6B9E;
+            --cp-indigo-dk: #245680;
+            --cp-indigo-lt: #E8F4FD;
             --cp-border:    #C9D5E0;
         }
 
@@ -86,7 +89,7 @@ class Bootstrap
         #mainMenu .navbar,
         nav.navbar {
             background-color: var(--cp-nav) !important;
-            border-bottom: 1px solid var(--cp-panel) !important;
+            border-bottom: 1px solid var(--cp-nav-border) !important;
         }
 
         /* Navbar brand / text links */
@@ -95,13 +98,13 @@ class Bootstrap
         .navbar .navbar-text,
         #mainMenu .nav-link,
         #mainMenu .navbar-brand {
-            color: rgba(255,255,255,0.90) !important;
+            color: var(--cp-nav-text) !important;
         }
 
         .navbar .nav-link:hover,
         #mainMenu .nav-link:hover {
-            color: #ffffff !important;
-            background-color: rgba(255,255,255,0.12) !important;
+            color: #0F2A44 !important;
+            background-color: rgba(0,0,0,0.06) !important;
             border-radius: 4px;
         }
 
@@ -110,9 +113,9 @@ class Bootstrap
         .oe-dropdown-toggle + .dropdown-menu,
         .menuEntries {
             background-color: var(--cp-panel) !important;
-            border: 1px solid rgba(255,255,255,0.12) !important;
+            border: 1px solid var(--cp-border) !important;
             border-radius: 6px !important;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12) !important;
             z-index: 99999 !important;
         }
 
@@ -120,7 +123,7 @@ class Bootstrap
         .dropdown-menu a,
         .menuEntries a,
         .menuEntries li a {
-            color: rgba(255,255,255,0.85) !important;
+            color: #1A2733 !important;
             font-size: 13px !important;
             padding: 7px 16px !important;
         }
@@ -128,17 +131,17 @@ class Bootstrap
         .dropdown-item:hover,
         .dropdown-menu a:hover,
         .menuEntries a:hover {
-            background-color: rgba(255,255,255,0.15) !important;
-            color: #ffffff !important;
+            background-color: rgba(0,0,0,0.05) !important;
+            color: #0F2A44 !important;
         }
 
         .dropdown-divider,
         .menuEntries hr {
-            border-color: rgba(255,255,255,0.15) !important;
+            border-color: #E5EBF0 !important;
         }
 
         .dropdown-header {
-            color: rgba(255,255,255,0.65) !important;
+            color: #4E6E82 !important;
             font-size: 10px !important;
             text-transform: uppercase;
             letter-spacing: 0.8px;
@@ -149,20 +152,21 @@ class Bootstrap
         #anySearchBox input {
             border: 1px solid var(--cp-border) !important;
             border-radius: 20px !important;
-            background: rgba(255,255,255,0.12) !important;
-            color: #fff !important;
+            background: #FFFFFF !important;
+            color: var(--cp-text) !important;
             padding: 4px 12px !important;
             font-size: 12px;
         }
 
         #anySearchBox input::placeholder {
-            color: rgba(255,255,255,0.68) !important;
+            color: #547690 !important;
         }
 
         #anySearchBox input:focus {
-            background: rgba(255,255,255,0.22) !important;
+            background: #FFFFFF !important;
             outline: none;
-            box-shadow: 0 0 0 2px rgba(14,138,138,0.5) !important;
+            border-color: var(--cp-teal) !important;
+            box-shadow: 0 0 0 2px rgba(10,123,123,0.25) !important;
         }
 
         /* Search button in nav */
@@ -261,8 +265,8 @@ class Bootstrap
             <!-- Header -->
             <div style="
                 padding: 10px 14px;
-                background: #3B4FBF;
-                background: linear-gradient(135deg, #3B4FBF 0%, #2E3E99 100%);
+                background: #2E6B9E;
+                background: linear-gradient(135deg, #2E6B9E 0%, #245680 100%);
                 color: white;
                 display: flex;
                 align-items: center;
@@ -272,7 +276,7 @@ class Bootstrap
                 <div style="font-weight: 600; font-size: 14px; letter-spacing: 0.2px;">
                     🩺 Clinical Co-Pilot
                     <?php if (getenv('COPILOT_DEMO_MODE') !== 'false'): ?>
-                        <span style="font-size:10px; background:rgba(255,255,255,0.2);
+                        <span style="font-size:10px; background:rgba(0,0,0,0.18);
                             padding:1px 6px; border-radius:10px; margin-left:6px;
                             letter-spacing:0.5px;">DEMO</span>
                     <?php endif; ?>
@@ -281,13 +285,13 @@ class Bootstrap
                     <span id="copilot-patient-name" style="font-size:11px; opacity:0.85;
                         max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
                     <button onclick="copilotClear()" title="Clear conversation"
-                        style="background:rgba(255,255,255,0.22); border:none; color:white;
+                        style="background:rgba(0,0,0,0.18); border:none; color:white;
                                cursor:pointer; font-size:14px; padding:2px 6px; border-radius:4px;
-                               transition:opacity 0.15s;">↺</button>
+                               transition:background 0.15s;">↺</button>
                     <button onclick="copilotToggle()" title="Close"
-                        style="background:rgba(255,255,255,0.22); border:none; color:white;
+                        style="background:rgba(0,0,0,0.18); border:none; color:white;
                                cursor:pointer; font-size:16px; padding:2px 6px; border-radius:4px;
-                               transition:opacity 0.15s;">×</button>
+                               transition:background 0.15s;">×</button>
                 </div>
             </div>
 
@@ -295,10 +299,10 @@ class Bootstrap
             <div id="copilot-context-strip" style="
                 display:none;
                 padding: 5px 14px;
-                background: #EEF0FB;
+                background: #E8F4FD;
                 border-bottom: 1px solid #C9D5E0;
                 font-size: 11px;
-                color: #3B4FBF;
+                color: #2E6B9E;
                 font-weight: 500;
             "></div>
 
