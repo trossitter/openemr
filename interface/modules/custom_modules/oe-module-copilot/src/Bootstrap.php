@@ -138,7 +138,7 @@ class Bootstrap
         }
 
         .dropdown-header {
-            color: rgba(255,255,255,0.5) !important;
+            color: rgba(255,255,255,0.65) !important;
             font-size: 10px !important;
             text-transform: uppercase;
             letter-spacing: 0.8px;
@@ -156,7 +156,7 @@ class Bootstrap
         }
 
         #anySearchBox input::placeholder {
-            color: rgba(255,255,255,0.55) !important;
+            color: rgba(255,255,255,0.68) !important;
         }
 
         #anySearchBox input:focus {
@@ -281,13 +281,13 @@ class Bootstrap
                     <span id="copilot-patient-name" style="font-size:11px; opacity:0.85;
                         max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
                     <button onclick="copilotClear()" title="Clear conversation"
-                        style="background:rgba(255,255,255,0.15); border:none; color:white;
+                        style="background:rgba(255,255,255,0.22); border:none; color:white;
                                cursor:pointer; font-size:14px; padding:2px 6px; border-radius:4px;
-                               opacity:0.85; transition:opacity 0.15s;">↺</button>
+                               transition:opacity 0.15s;">↺</button>
                     <button onclick="copilotToggle()" title="Close"
-                        style="background:rgba(255,255,255,0.15); border:none; color:white;
+                        style="background:rgba(255,255,255,0.22); border:none; color:white;
                                cursor:pointer; font-size:16px; padding:2px 6px; border-radius:4px;
-                               opacity:0.85; transition:opacity 0.15s;">×</button>
+                               transition:opacity 0.15s;">×</button>
                 </div>
             </div>
 
