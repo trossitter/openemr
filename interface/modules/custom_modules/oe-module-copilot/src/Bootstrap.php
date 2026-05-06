@@ -487,38 +487,48 @@ class Bootstrap
                PATIENT DETECTION
             ────────────────────────────────────────────────────── */
             function pollPatient() {
-                fetch('/interface/modules/custom_modules/oe-module-copilot/pid.php',
-                      {credentials: 'include'})
-                    .then(function(r) { return r.json(); })
-                    .then(function(data) {
-                        if (data.pid && data.pid !== currentPid) {
-                            currentPid = data.pid;
-                            var name = data.name || ('Patient #' + data.pid);
-                            document.getElementById('copilot-patient-name').textContent = name;
+                var pid = null;
+                var name = null;
+                try {
+                    /* Read directly from OpenEMR's Knockout view model — works in
+                       both the tabbed frame (app_view_model in scope) and any
+                       child frame (window.top.app_view_model). */
+                    var vm = (typeof app_view_model !== 'undefined')
+                        ? app_view_model
+                        : (window.top && window.top.app_view_model ? window.top.app_view_model : null);
+                    if (vm && vm.application_data.patient()) {
+                        var pt = vm.application_data.patient();
+                        pid  = parseInt(pt.pid(), 10) || null;
+                        name = pt.pname ? pt.pname() : null;
+                    }
+                } catch (e) {}
 
-                            var strip = document.getElementById('copilot-context-strip');
-                            strip.textContent = '📋 ' + name;
-                            strip.style.display = 'block';
+                if (pid && pid !== currentPid) {
+                    currentPid = pid;
+                    name = name || ('Patient #' + pid);
+                    document.getElementById('copilot-patient-name').textContent = name;
 
-                            sessionId = 'sess_' + Math.random().toString(36).substr(2, 12);
-                            resetMessages(
-                                '<div style="font-size:28px;margin-bottom:10px;">✅</div>' +
-                                '<strong style="color:#1A2733;">' + escapeHtml(name) + '</strong><br>' +
-                                '<span style="color:#4A5E6D;font-size:12px;">' +
-                                'Chart loaded. Click <strong>⚡ Pre-Visit Briefing</strong> or ask a question.</span>'
-                            );
-                        } else if (!data.pid) {
-                            currentPid = null;
-                            document.getElementById('copilot-patient-name').textContent = '';
-                            document.getElementById('copilot-context-strip').style.display = 'none';
-                            resetMessages(
-                                '<div style="font-size:28px;margin-bottom:10px;">🩺</div>' +
-                                '<strong style="color:#1A2733;">Clinical Co-Pilot</strong><br>' +
-                                '<span style="color:#4A5E6D;">Open a patient chart to begin.</span>'
-                            );
-                        }
-                    })
-                    .catch(function() {});
+                    var strip = document.getElementById('copilot-context-strip');
+                    strip.textContent = '📋 ' + name;
+                    strip.style.display = 'block';
+
+                    sessionId = 'sess_' + Math.random().toString(36).substr(2, 12);
+                    resetMessages(
+                        '<div style="font-size:28px;margin-bottom:10px;">✅</div>' +
+                        '<strong style="color:#1A2733;">' + escapeHtml(name) + '</strong><br>' +
+                        '<span style="color:#4A5E6D;font-size:12px;">' +
+                        'Chart loaded. Click <strong>⚡ Pre-Visit Briefing</strong> or ask a question.</span>'
+                    );
+                } else if (!pid && currentPid !== null) {
+                    currentPid = null;
+                    document.getElementById('copilot-patient-name').textContent = '';
+                    document.getElementById('copilot-context-strip').style.display = 'none';
+                    resetMessages(
+                        '<div style="font-size:28px;margin-bottom:10px;">🩺</div>' +
+                        '<strong style="color:#1A2733;">Clinical Co-Pilot</strong><br>' +
+                        '<span style="color:#4A5E6D;">Open a patient chart to begin.</span>'
+                    );
+                }
             }
 
             function resetMessages(innerHtml) {
