@@ -16,6 +16,7 @@ import pymysql.cursors
 
 from config import DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS, MAX_ENCOUNTERS
 from observability import log_tool_call, log_tool_error, timer
+from retriever import search_guidelines
 
 
 def _connect():
@@ -115,6 +116,29 @@ TOOL_DEFINITIONS = [
                 "pid": {"type": "integer", "description": "OpenEMR patient ID"}
             },
             "required": ["pid"],
+        },
+    },
+    {
+        "name": "search_clinical_guidelines",
+        "description": (
+            "Search the clinical guideline corpus (ADA 2024, JNC 8, USPSTF) for "
+            "evidence-based recommendations relevant to a clinical question. "
+            "Use this when the physician asks about treatment targets, drug selection, "
+            "screening recommendations, dosing thresholds, or any policy question "
+            "that goes beyond what is documented in this patient's chart. "
+            "Returns ranked guideline snippets with source citations."
+        ),
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Clinical question to search guidelines for, e.g. "
+                                   "'HbA1c target for type 2 diabetes' or "
+                                   "'first-line antihypertensive for CKD patient'",
+                }
+            },
+            "required": ["query"],
         },
     },
     {
@@ -361,6 +385,28 @@ def get_data_gaps(pid: int, trace_id: str) -> dict:
     }
 
 
+def search_clinical_guidelines_tool(query: str, trace_id: str) -> dict:
+    with timer() as t:
+        chunks = search_guidelines(query, top_n=3)
+    log_tool_call(trace_id, "search_clinical_guidelines", {"query": query}, t.get("ms", 0), len(chunks))
+    results = []
+    for c in chunks:
+        results.append({
+            "source": f"guideline / {c.source_id}, {c.section}",
+            "citation": f"(source: guideline / {c.source_id}, {c.section})",
+            "text": c.text,
+            "score": round(c.score, 3),
+        })
+    return {
+        "query": query,
+        "results": results,
+        "instruction": (
+            "Cite each fact using the exact 'citation' string provided. "
+            "Never omit citations when using guideline content."
+        ),
+    }
+
+
 # ---------------------------------------------------------------------------
 # Tool dispatcher — called by the agent loop
 # ---------------------------------------------------------------------------
@@ -371,6 +417,7 @@ TOOL_MAP = {
     "get_recent_encounters": get_recent_encounters,
     "get_vitals": get_vitals,
     "get_data_gaps": get_data_gaps,
+    "search_clinical_guidelines": search_clinical_guidelines_tool,
 }
 
 

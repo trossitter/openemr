@@ -16,9 +16,11 @@ inside the Docker network only, accessible via the OpenEMR Apache proxy.
 """
 import json
 import os
+import tempfile
+from pathlib import Path
 from typing import AsyncGenerator
 
-from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi import FastAPI, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -26,6 +28,7 @@ from pydantic import BaseModel
 from agent import chat, clear_conversation, get_conversation_length
 from config import COPILOT_SECRET, DEMO_MODE, LOG_FILE
 from graph import run_graph
+from ingest import attach_and_extract
 
 app = FastAPI(
     title="Clinical Co-Pilot",
@@ -142,6 +145,39 @@ def v2_query_endpoint(
         raise HTTPException(status_code=500, detail="Graph execution failed") from exc
 
     return result
+
+
+@app.post("/v2/ingest")
+async def ingest_endpoint(
+    file: UploadFile = File(...),
+    doc_type: str = Form(...),
+    pid: int = Form(...),
+    x_copilot_secret: str | None = Header(default=None),
+):
+    """Upload a PDF/image, extract structured data, and import to patient chart."""
+    _require_auth(x_copilot_secret)
+
+    if doc_type not in ("lab_pdf", "intake_form"):
+        raise HTTPException(status_code=400, detail="doc_type must be 'lab_pdf' or 'intake_form'")
+    if pid <= 0:
+        raise HTTPException(status_code=400, detail="Invalid patient ID")
+
+    suffix = Path(file.filename).suffix if file.filename else ".pdf"
+    tmp_path = None
+    try:
+        content = await file.read()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            tmp.write(content)
+            tmp_path = tmp.name
+        result = attach_and_extract(pid, tmp_path, doc_type)
+        return {"status": "ok", "pid": pid, "doc_type": doc_type, "extracted": result}
+    except (ValueError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail="Extraction failed") from exc
+    finally:
+        if tmp_path and os.path.exists(tmp_path):
+            os.unlink(tmp_path)
 
 
 @app.get("/logs")
