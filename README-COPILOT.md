@@ -57,7 +57,7 @@ done && echo "Ready."
 
 Navigate to **https://localhost:9300**
 
-> Your browser will show a certificate warning (self-signed cert in dev mode).  
+> Your browser will show a certificate warning (self-signed cert in dev mode).
 > Click **Advanced → Proceed to localhost** to continue.
 
 | Field | Value |

@@ -11,7 +11,7 @@ Both return source citations in every response.
 
 ## Live demo
 
-**API:** `https://clinicalcopilot.org/copilot/`  
+**API:** `https://clinicalcopilot.org/copilot/`
 **Secret:** `copilot-prod-559a98e9a9a7d479dfb99e16`
 
 ### Requirement 1 — Document ingestion
@@ -55,7 +55,7 @@ pip install -r requirements.txt pytest
 python -m pytest evals/test_eval.py -v
 ```
 
-50 cases, 5 boolean rubrics. CI-blocking via `.github/workflows/copilot-eval-gate.yml`.  
+50 cases, 5 boolean rubrics. CI-blocking via `.github/workflows/copilot-eval-gate.yml`.
 All 5 regression gates enforce ≥ 90% pass rate.
 
 ---

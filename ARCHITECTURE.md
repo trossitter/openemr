@@ -1,8 +1,8 @@
 # Clinical Co-Pilot — Architecture
 
-**Document version:** 1.0  
-**Date:** 2026-04-29  
-**Status:** Pre-implementation roadmap  
+**Document version:** 1.0
+**Date:** 2026-04-29
+**Status:** Pre-implementation roadmap
 **Source documents:** [AUDIT.md](./AUDIT.md), [USERS.md](./USERS.md)
 
 ---

@@ -4,8 +4,8 @@
 
 ## The User: Dr. Sarah Chen, Primary Care Physician
 
-**Role:** Internal medicine physician, outpatient primary care practice  
-**Daily load:** 18–22 scheduled patients, 8 AM–5 PM, with a 30-minute lunch that runs 15 minutes  
+**Role:** Internal medicine physician, outpatient primary care practice
+**Daily load:** 18–22 scheduled patients, 8 AM–5 PM, with a 30-minute lunch that runs 15 minutes
 **Experience:** 8 years post-residency. Competent and efficient in OpenEMR. The system is not the bottleneck — her schedule is.
 
 ### Who She Is
@@ -38,14 +38,14 @@ Her tolerance for AI behavior: **high on recall, zero on invention.** She will u
 
 ### Use Case 1: Pre-Visit Briefing (Primary)
 
-**When:** 8:18 AM. Dr. Chen finishes with Patient 1 and clicks Patient 2 on her schedule.  
-**What she's doing:** Simultaneously walking to the door, reviewing the patient's name, trying to remember if this is the Ted Shaw with uncontrolled hypertension or the Ted Shaw who's been doing well.  
+**When:** 8:18 AM. Dr. Chen finishes with Patient 1 and clicks Patient 2 on her schedule.
+**What she's doing:** Simultaneously walking to the door, reviewing the patient's name, trying to remember if this is the Ted Shaw with uncontrolled hypertension or the Ted Shaw who's been doing well.
 **What she needs:** The three things most relevant to today's visit, already surfaced. Not the full chart. Not a summary of a summary. The signal.
 
 **The use case:**
 > "Ted Shaw, 79M. Scheduled reason: routine follow-up. Last visit 6 weeks ago — BP was 162/100, you added amlodipine. He's on lisinopril 20mg, metformin 1000mg BID, amlodipine 5mg (new). Today's vitals not yet taken. Last HbA1c was 8.1% three months ago — you ordered a repeat at the last visit; result not yet in chart."
 
-**Why an agent, not a dashboard:**  
+**Why an agent, not a dashboard:**
 A dashboard shows you the same fields every time. This patient's most important fact today is the unresolved HbA1c order from six weeks ago — something a dashboard would bury in a results tab. An agent can reason about *what's changed, what's pending, and what matters given today's visit reason.* That inference across multiple data sources is what makes this irreducibly conversational rather than tabular.
 
 **Agent must:**
@@ -62,14 +62,14 @@ A dashboard shows you the same fields every time. This patient's most important 
 
 ### Use Case 2: Medication Safety Check During Prescribing
 
-**When:** Dr. Chen decides to add a new medication mid-visit.  
-**What she's doing:** Typing a new prescription into OpenEMR.  
+**When:** Dr. Chen decides to add a new medication mid-visit.
+**What she's doing:** Typing a new prescription into OpenEMR.
 **What she needs:** Immediate awareness of interactions with current medications, and confirmation she's not duplicating a drug already on the list under a different name.
 
 **The use case:**
 > Dr. Chen types "propranolol 20mg BID" for Nora Cohen (anxiety/migraine). The Co-Pilot surfaces: "Nora is already on sertraline 150mg. Propranolol + sertraline: no contraindication, but monitor for additive hypotension. No existing beta-blocker on her list. Sumatriptan is active — propranolol is an appropriate adjunct for migraine prophylaxis."
 
-**Why an agent, not a dashboard:**  
+**Why an agent, not a dashboard:**
 Drug interaction checkers already exist in OpenEMR and show pop-up alerts. They are tuned to be so broad that physicians click through them reflexively. An agent can apply the patient's specific context — this patient's age, weight, current conditions, current medications — to produce a signal rather than a noise. The same pharmacological rule means something different for a 28-year-old vs. a 79-year-old on three antihypertensives. A rules-based alert cannot make that distinction. An agent can.
 
 **Agent must:**
@@ -86,16 +86,16 @@ Drug interaction checkers already exist in OpenEMR and show pop-up alerts. They 
 
 ### Use Case 3: Between-Visit Chart Question
 
-**When:** 12:10 PM. Dr. Chen is eating lunch and a nurse pops in: "Jim Moses called — he's having more fatigue, wants to know if it's the metoprolol."  
-**What she's doing:** Trying to reconstruct Jim's cardiac history from memory to answer a question without pulling up his chart on her phone.  
+**When:** 12:10 PM. Dr. Chen is eating lunch and a nurse pops in: "Jim Moses called — he's having more fatigue, wants to know if it's the metoprolol."
+**What she's doing:** Trying to reconstruct Jim's cardiac history from memory to answer a question without pulling up his chart on her phone.
 **What she needs:** A fast, accurate answer to a specific clinical question about a specific patient.
 
 **The use case:**
 > Dr. Chen opens the Co-Pilot and types: "Jim Moses — could his fatigue be metoprolol-related?"
-> 
+>
 > Co-Pilot responds: "Jim Moses, 81M, post-STEMI (LAD, Oct 2025). On metoprolol succinate 50mg. At his last visit (Apr 14), he reported fatigue with exertion at 2–3 blocks — you documented NYHA Class II. His HR was 64. Metoprolol-related fatigue is plausible at this HR, though his echo showed EF 45% (stable) which could independently explain exertional symptoms. You ordered a repeat BMP at that visit; result not in chart yet."
 
-**Why an agent, not a dashboard:**  
+**Why an agent, not a dashboard:**
 This question requires reasoning across multiple data points simultaneously: the medication, the dose, the patient's specific cardiac history, his last documented functional status, and the timing of symptoms relative to a recent medication adjustment. No dashboard view presents these together. A chart search returns individual records in separate tabs. The agent's value is synthesis — producing a response shaped by the specific question asked, not a generic display of chart contents.
 
 **Agent must:**
@@ -112,14 +112,14 @@ This question requires reasoning across multiple data points simultaneously: the
 
 ### Use Case 4: End-of-Day Chart Completion Assist
 
-**When:** 5:20 PM. Dr. Chen has 6 encounter notes to finish.  
-**What she's doing:** Reconstructing what happened in visits that ended 4 hours ago.  
+**When:** 5:20 PM. Dr. Chen has 6 encounter notes to finish.
+**What she's doing:** Reconstructing what happened in visits that ended 4 hours ago.
 **What she needs:** A fast way to recall the key clinical facts from a visit so she can write an accurate SOAP note without starting from scratch.
 
 **The use case:**
 > Dr. Chen opens Eduardo Perez's incomplete encounter. Co-Pilot surfaces: "Eduardo Perez, 69M, COPD. Today's visit reason: COPD exacerbation follow-up. Vitals: BP 130/82, O2 sat 91% on room air, RR 22, HR 88. Active meds: tiotropium, albuterol, azithromycin (started Mar 20), prednisone (started Mar 20). Last SOAP (Mar 20): exacerbation with productive cough, started antibiotics and steroids."
 
-**Why an agent, not a dashboard:**  
+**Why an agent, not a dashboard:**
 The value here is not showing her the data — she can do that herself. It's pre-assembling the clinically relevant subset so she can write the note in 3 minutes instead of 7. A physician completing charts at end of day is cognitively depleted. The agent reduces the reconstruction cost. A sorted list of chart tabs does not.
 
 **Agent must:**
