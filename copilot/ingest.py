@@ -266,6 +266,171 @@ def _inject_provenance(citation_dict: dict, geom_map: dict[int, PageGeometry]) -
     return citation_dict
 
 
+def _cluster_words_into_rows(words: list, y_tolerance: float = 4.0) -> list[list]:
+    """Group PyMuPDF word tuples into horizontal rows by y-midpoint proximity.
+
+    Each word tuple: (x0, y0, x1, y1, text, block_no, line_no, word_no).
+    Words whose y-midpoints are within y_tolerance PDF points of an existing
+    cluster are added to it; otherwise a new cluster is started.
+    Clusters are returned in top-to-bottom order.
+    """
+    clusters: list[list] = []
+    for w in words:
+        wy_mid = (w[1] + w[3]) / 2
+        placed = False
+        for cluster in clusters:
+            cy_mid = sum((c[1] + c[3]) / 2 for c in cluster) / len(cluster)
+            if abs(wy_mid - cy_mid) <= y_tolerance:
+                cluster.append(w)
+                placed = True
+                break
+        if not placed:
+            clusters.append([w])
+    clusters.sort(key=lambda c: min(w[1] for w in c))
+    return clusters
+
+
+def _find_row_by_name_and_value(
+    clusters: list[list],
+    test_name: str,
+    value: str,
+) -> "Optional[fitz.Rect]":
+    """Find the value-cell bbox in the row that contains both test_name and value.
+
+    Matching rules:
+    - value must appear as a STANDALONE word token in the row (not a substring
+      of another number — PyMuPDF word-tokenises by whitespace so this is exact).
+    - Every significant word from test_name must appear somewhere in the row text
+      (punctuation-stripped, case-insensitive).
+
+    Returns the fitz.Rect of the value word, or None if no unambiguous row found.
+    """
+    import fitz
+    import re
+
+    value_norm = value.strip().lower()
+
+    # Significant name tokens: drop single chars, strip punctuation
+    def _tok(s: str) -> str:
+        return re.sub(r"[^\w/.-]", "", s).lower()
+
+    name_tokens = [_tok(w) for w in test_name.split() if len(w) > 1]
+
+    for cluster in clusters:
+        word_texts_lower = [w[4].strip().lower() for w in cluster]
+
+        # 1. Value must be a standalone word in this row
+        if value_norm not in word_texts_lower:
+            continue
+
+        # 2. All significant name tokens must appear in the row text
+        row_text = " ".join(_tok(w[4]) for w in cluster)
+        if not all(nt in row_text for nt in name_tokens):
+            continue
+
+        # Matched — return the value word's exact bbox
+        for w in cluster:
+            if w[4].strip().lower() == value_norm:
+                return fitz.Rect(w[0], w[1], w[2], w[3])
+
+    return None
+
+
+def _refine_bboxes_via_native_text(
+    path: Path,
+    citations: list[Citation],
+    geom_map: dict[int, PageGeometry],
+    field_names: Optional[list[str]] = None,
+    field_values: Optional[list[str]] = None,
+) -> list[Citation]:
+    """Replace Claude's estimated bboxes with PyMuPDF native text positions.
+
+    For PDFs with a native text layer, uses word-level row clustering:
+    each citation is matched to the row whose text contains BOTH the
+    field name (test name, section label, etc.) AND the extracted value
+    as a standalone word. This eliminates false positives where the same
+    numeric value appears in reference ranges, dates, or other metadata.
+
+    field_names, when supplied, is parallel to citations and provides the
+    human-readable label to anchor the row search (e.g. "Total Cholesterol").
+
+    field_values, when supplied, is parallel to citations and provides the
+    standalone result value for the word-level match (e.g. "241"). This must
+    be the actual extracted value, not quote_or_value which Claude often fills
+    with the full row text.
+
+    Falls back to Claude's estimate for non-PDF files or unmatched rows.
+    """
+    import fitz
+
+    if path.suffix.lower() != ".pdf":
+        return citations
+
+    doc = fitz.open(str(path))
+    refined: list[Citation] = []
+
+    try:
+        # Pre-cluster words per page so we don't re-extract on every citation
+        page_clusters: dict[int, list[list]] = {}
+
+        for i, cit in enumerate(citations):
+            page_idx = cit.bbox.page if cit.bbox else 0
+            geom = geom_map.get(page_idx)
+
+            if geom is None or page_idx >= len(doc):
+                refined.append(cit)
+                continue
+
+            if page_idx not in page_clusters:
+                page = doc[page_idx]
+                page_clusters[page_idx] = _cluster_words_into_rows(
+                    page.get_text("words")
+                )
+
+            clusters = page_clusters[page_idx]
+            scale = geom.scale
+
+            field_name = (field_names[i] if field_names and i < len(field_names) else "") or ""
+            # Use the explicit field_value (e.g. LabResult.value = "241") for the
+            # word-level match. Claude often puts the full row text in quote_or_value,
+            # which will never equal a single word token.
+            value = (field_values[i] if field_values and i < len(field_values) else None) or cit.quote_or_value.strip()
+
+            matched_rect = _find_row_by_name_and_value(clusters, field_name, value)
+
+            # Fallback: if row search fails, try bare value search
+            if matched_rect is None and value:
+                hits = doc[page_idx].search_for(value)
+                if hits:
+                    matched_rect = hits[0]
+
+            if matched_rect is None:
+                refined.append(cit)
+                continue
+
+            from schemas import BBox
+            new_bbox = BBox(
+                x0=matched_rect.x0 * scale,
+                y0=matched_rect.y0 * scale,
+                x1=matched_rect.x1 * scale,
+                y1=matched_rect.y1 * scale,
+                page=page_idx,
+                coordinate_space="image_px_300dpi",
+                page_width=geom.image_width_px,
+                page_height=geom.image_height_px,
+            )
+            refined.append(cit.model_copy(update={
+                "bbox": new_bbox,
+                "transform_chain": list(cit.transform_chain) + ["pymupdf_row_cluster_search"],
+                "evidence_type": "native_pdf_text",
+            }))
+
+    finally:
+        doc.close()
+
+    return refined
+
+
 # ---------------------------------------------------------------------------
 # FHIR write helpers (unchanged from original)
 # ---------------------------------------------------------------------------
@@ -460,6 +625,29 @@ def attach_and_extract(
         intake = IntakeForm.model_validate(payload)
         citations = [intake.source_citation]
         data = intake
+
+    # Step 3b — refine bboxes via PyMuPDF row-cluster search (PDF only).
+    # For each lab result, rows are identified by the co-presence of the test
+    # name AND the value as a standalone word — eliminating false positives from
+    # integer values that appear in reference ranges, dates, or other columns.
+    if doc_type == "lab_pdf" and isinstance(data, list):
+        field_names: Optional[list[str]] = [r.test_name for r in data]
+        field_values: Optional[list[str]] = [r.value for r in data]
+    else:
+        field_names = None
+        field_values = None
+
+    citations = _refine_bboxes_via_native_text(path, citations, geom_map, field_names, field_values)
+
+    # Write refined citations back into the schema objects so the API response
+    # also carries the corrected coordinates.
+    if doc_type == "lab_pdf" and isinstance(data, list):
+        data = [
+            r.model_copy(update={"source_citation": c})
+            for r, c in zip(data, citations)
+        ]
+    elif doc_type in ("intake_form", "fax_packet") and not isinstance(data, list):
+        data = data.model_copy(update={"source_citation": citations[0]})
 
     # Step 4 — FHIR write (skipped in DEMO_MODE and for fax_packet)
     if not DEMO_MODE and doc_type != "fax_packet":
