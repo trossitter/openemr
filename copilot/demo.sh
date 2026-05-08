@@ -168,12 +168,11 @@ QUERY="What does JNC 8 recommend for blood pressure targets in patients with dia
 printf "\n${B}  Query:${R} %s\n\n" "$QUERY"
 label "POST /v2/query  (supervisor routes to evidence_retriever → assembles grounded response)"
 
-QRESP=$(curl -s -X POST "$BASE/v2/query" \
+curl -s -X POST "$BASE/v2/query" \
   -H "Content-Type: application/json" \
   -H "X-Copilot-Secret: $SECRET" \
-  -d "{\"session_id\":\"demo\",\"pid\":$PID,\"query\":\"$QUERY\"}")
-
-echo "$QRESP" | python3 -c "
+  -d "{\"session_id\":\"demo\",\"pid\":$PID,\"query\":\"$QUERY\"}" \
+  | python3 -c "
 import sys, json
 d = json.load(sys.stdin)
 
