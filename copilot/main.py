@@ -22,13 +22,14 @@ from typing import AsyncGenerator
 
 from fastapi import FastAPI, File, Form, Header, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 
 from agent import chat, clear_conversation, get_conversation_length
 from config import COPILOT_SECRET, DEMO_MODE, LOG_FILE
 from graph import run_graph
-from ingest import attach_and_extract
+from ingest import ALL_DOC_TYPES, VISION_DOC_TYPES, attach_and_extract
+from render import OVERLAY_DIR
 
 app = FastAPI(
     title="Clinical Co-Pilot",
@@ -126,7 +127,7 @@ def v2_query_endpoint(
         raise HTTPException(status_code=400, detail="Query cannot be empty")
     if req.pid <= 0:
         raise HTTPException(status_code=400, detail="Invalid patient ID")
-    if req.file_path and req.doc_type not in ("lab_pdf", "intake_form"):
+    if req.file_path and req.doc_type not in ALL_DOC_TYPES:
         raise HTTPException(
             status_code=400,
             detail="doc_type must be 'lab_pdf' or 'intake_form' when file_path is provided",
@@ -157,8 +158,11 @@ async def ingest_endpoint(
     """Upload a PDF/image, extract structured data, and import to patient chart."""
     _require_auth(x_copilot_secret)
 
-    if doc_type not in ("lab_pdf", "intake_form"):
-        raise HTTPException(status_code=400, detail="doc_type must be 'lab_pdf' or 'intake_form'")
+    if doc_type not in ALL_DOC_TYPES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"doc_type must be one of {sorted(ALL_DOC_TYPES)}",
+        )
     if pid <= 0:
         raise HTTPException(status_code=400, detail="Invalid patient ID")
 
@@ -169,8 +173,17 @@ async def ingest_endpoint(
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp.write(content)
             tmp_path = tmp.name
-        result = attach_and_extract(pid, tmp_path, doc_type)
-        return {"status": "ok", "pid": pid, "doc_type": doc_type, "extracted": result}
+        extraction = attach_and_extract(pid, tmp_path, doc_type)
+        return {
+            "status": "ok",
+            "pid": pid,
+            "doc_type": doc_type,
+            "doc_id": extraction.doc_id,
+            "page_count": extraction.page_count,
+            "extracted": extraction.data_as_dicts(),
+            "overlay_metadata": extraction.overlay_metadata,
+            "preview_b64": extraction.preview_b64,
+        }
     except (ValueError, FileNotFoundError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     except Exception as exc:
@@ -178,6 +191,46 @@ async def ingest_endpoint(
     finally:
         if tmp_path and os.path.exists(tmp_path):
             os.unlink(tmp_path)
+
+
+@app.get("/v2/overlay/{doc_id}/{page}")
+def get_overlay_page(
+    doc_id: str,
+    page: int,
+    x_copilot_secret: str | None = Header(default=None),
+):
+    """Serve an annotated PNG overlay for a specific doc_id and page index.
+
+    The doc_id is returned by /v2/ingest in the 'doc_id' field.
+    Page is 0-based.
+    """
+    _require_auth(x_copilot_secret)
+
+    png_path = Path(OVERLAY_DIR) / doc_id / f"page_{page:03d}.png"
+    if not png_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Overlay not found for doc_id={doc_id!r} page={page}. "
+                   "Run /v2/ingest first.",
+        )
+    return FileResponse(str(png_path), media_type="image/png")
+
+
+@app.get("/v2/overlay/{doc_id}/metadata")
+def get_overlay_metadata(
+    doc_id: str,
+    x_copilot_secret: str | None = Header(default=None),
+):
+    """Return the machine-readable overlay metadata JSON for a given doc_id."""
+    _require_auth(x_copilot_secret)
+
+    meta_path = Path(OVERLAY_DIR) / doc_id / "overlay_metadata.json"
+    if not meta_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"Overlay metadata not found for doc_id={doc_id!r}.",
+        )
+    return json.loads(meta_path.read_text(encoding="utf-8"))
 
 
 @app.get("/logs")

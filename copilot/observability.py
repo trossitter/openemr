@@ -102,6 +102,28 @@ def log_graph_handoff(record: dict):
     _write({"event": "graph_handoff", **record})
 
 
+def log_extraction(
+    trace_id: str,
+    doc_id: str,
+    doc_type: str,
+    page_count: int,
+    field_count: int,
+    bbox_count: int,
+    duration_ms: float,
+):
+    """Log a document extraction event. No raw field values — PHI-safe."""
+    _write({
+        "event": "extraction",
+        "trace_id": trace_id,
+        "doc_id": doc_id,
+        "doc_type": doc_type,
+        "page_count": page_count,
+        "field_count": field_count,
+        "bbox_count": bbox_count,
+        "duration_ms": round(duration_ms, 1),
+    })
+
+
 def log_request_complete(trace_id: str, total_ms: float, status: str):
     _write({
         "event": "request_complete",

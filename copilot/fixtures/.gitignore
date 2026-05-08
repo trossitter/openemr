@@ -1,0 +1,8 @@
+# Generated test artifacts — not committed
+*.pdf
+*.png
+*.tiff
+*.tif
+*.xlsx
+*.docx
+__pycache__/

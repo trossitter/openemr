@@ -118,17 +118,16 @@ def intake_extractor(state: GraphState) -> dict:
         "document upload detected",
         f"file={state['file_path']}, doc_type={state['doc_type']}",
     )
-    result = attach_and_extract(
+    extraction = attach_and_extract(
         patient_id=state["patient_id"],
         file_path=state["file_path"],
         doc_type=state["doc_type"],
     )
-    if isinstance(result, list):
-        serialized: dict | list = [r.model_dump() for r in result]
-        summary = f"extracted {len(serialized)} lab result(s)"
+    serialized = extraction.data_as_dicts()
+    if isinstance(serialized, list):
+        summary = f"extracted {len(serialized)} lab result(s) (doc_id={extraction.doc_id})"
     else:
-        serialized = result.model_dump()
-        summary = "extracted intake form"
+        summary = f"extracted intake form (doc_id={extraction.doc_id})"
 
     h_back = _handoff(
         "intake_extractor", "evidence_retriever",
