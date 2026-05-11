@@ -431,5 +431,7 @@ def dispatch_tool(tool_name: str, tool_input: dict, pid: int, trace_id: str) -> 
     kwargs = {"pid": pid, "trace_id": trace_id}
     if tool_name == "get_recent_encounters" and "limit" in tool_input:
         kwargs["limit"] = tool_input["limit"]
+    if tool_name == "search_clinical_guidelines":
+        kwargs = {"query": tool_input.get("query", ""), "trace_id": trace_id}
 
     return fn(**kwargs)
