@@ -4,8 +4,30 @@ AI agent embedded in OpenEMR. Extracts structured clinical data from uploaded
 documents, retrieves evidence from a guideline corpus, and returns grounded
 responses with machine-readable citations and a visual PDF bounding-box overlay.
 
-**API:** `https://clinicalcopilot.org/copilot/`  
-**Secret:** `copilot-prod-559a98e9a9a7d479dfb99e16`
+**Live app:** `https://clinicalcopilot.org`
+**API base:** `https://clinicalcopilot.org/copilot/`
+
+---
+
+## Environment variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | Yes | Claude API key — used for Vision extraction and chat |
+| `COHERE_API_KEY` | Yes | Cohere key — used for reranking in hybrid RAG |
+| `COPILOT_SECRET` | Yes | Shared secret between OpenEMR module and copilot service |
+| `COPILOT_DEMO_MODE` | No | `true` (default) gates FHIR writes; set `false` to enable round-trip |
+| `CLAUDE_MODEL` | No | Defaults to `claude-sonnet-4-6` |
+| `CHROMA_PERSIST_DIR` | No | ChromaDB storage path, defaults to `/data/chroma` |
+| `LOG_FILE` | No | Observability log path, defaults to `/var/log/copilot/copilot.jsonl` |
+| `DB_HOST` | No | MariaDB host, defaults to `mysql` |
+
+Copy `.env.example` to `.env` and fill in the required values:
+
+```bash
+cp .env.example .env
+# edit .env with your keys
+```
 
 ---
 
