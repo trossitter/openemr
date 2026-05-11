@@ -1,4 +1,5 @@
-#!/bin/zsh
+#!/usr/bin/env bash
+# shellcheck disable=SC2059,SC2250
 # Clinical Co-Pilot — end-to-end demo
 # Runs against the live site. No local service required.
 # Usage: cd ~/openemr/copilot && ./demo.sh
@@ -20,11 +21,11 @@ C=$'\033[1;36m'
 D=$'\033[2m'
 R=$'\033[0m'
 
-divider() { printf "\n${B}${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${R}\n" }
-header()  { divider; printf "${B}${BL}  %s${R}\n" "$1"; divider }
-ok()      { printf "${G}  ✓ %s${R}\n" "$1" }
-label()   { printf "${Y}  → %s${R}\n" "$1" }
-dim()     { printf "${D}    %s${R}\n" "$1" }
+divider() { printf "\n${B}${BL}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${R}\n"; }
+header()  { divider; printf "${B}${BL}  %s${R}\n" "$1"; divider; }
+ok()      { printf "${G}  ✓ %s${R}\n" "$1"; }
+label()   { printf "${Y}  → %s${R}\n" "$1"; }
+dim()     { printf "${D}    %s${R}\n" "$1"; }
 
 # ── Fixtures ────────────────────────────────────────────────────────────────
 if [[ ! -f fixtures/p01-chen-lipid-panel.pdf ]]; then
@@ -61,7 +62,7 @@ LAB_RESP=$(curl -s -X POST "$BASE/v2/ingest" \
 
 python3 - <<PYEOF
 import json, sys
-d = json.loads('''$(echo "$LAB_RESP" | python3 -c "import sys; print(sys.stdin.read().replace(\"'\", \"\\\\'\"))")'''  )
+d = json.loads('''$(echo "$LAB_RESP" | python3 -c "import sys; print(sys.stdin.read().replace(\"'\", \"\\\\'\"))" || true)'''  )
 print(f'  doc_id:    {d["doc_id"]}')
 print(f'  pages:     {d["page_count"]}')
 print(f'  extracted: {len(d["extracted"])} lab results')

@@ -26,7 +26,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 
 from agent import chat, clear_conversation, get_conversation_length
-from config import COPILOT_SECRET, DEMO_MODE, LOG_FILE
+from config import ANTHROPIC_API_KEY, COHERE_API_KEY, COPILOT_SECRET, DEMO_MODE, LOG_FILE
 from graph import run_graph
 from ingest import ALL_DOC_TYPES, VISION_DOC_TYPES, attach_and_extract
 from render import OVERLAY_DIR
@@ -71,10 +71,16 @@ class V2QueryRequest(BaseModel):
 
 @app.get("/health")
 def health():
+    checks = {
+        "anthropic_key_set": bool(ANTHROPIC_API_KEY),
+        "cohere_key_set": bool(COHERE_API_KEY),
+    }
+    status = "ok" if all(checks.values()) else "degraded"
     return {
-        "status": "ok",
+        "status": status,
         "demo_mode": DEMO_MODE,
         "service": "clinical-copilot",
+        "checks": checks,
     }
 
 

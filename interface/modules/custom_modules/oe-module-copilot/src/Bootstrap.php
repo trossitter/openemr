@@ -618,6 +618,14 @@ class Bootstrap
                     headers: {'X-Copilot-Secret': SECRET},
                     body: formData,
                 }).then(function(res) {
+                    if (res.status === 401) {
+                        statusEl.remove();
+                        textEl.style.color = '#B45309';
+                        textEl.textContent =
+                            '⚠ Authentication failed — COPILOT_SECRET mismatch. ' +
+                            'Ensure the secret in copilot/.env matches the OpenEMR module config.';
+                        throw new Error('handled');
+                    }
                     return res.json();
                 }).then(function(data) {
                     statusEl.remove();
@@ -704,10 +712,11 @@ class Bootstrap
                     }
 
                     document.getElementById('copilot-messages').scrollTop = 99999;
-                }).catch(function() {
+                }).catch(function(err) {
+                    if (err && err.message === 'handled') return;
                     statusEl.remove();
                     textEl.style.color = '#B45309';
-                    textEl.textContent = '⚠ Upload failed. Is the Co-Pilot service running?';
+                    diagnoseCopilotError(textEl);
                 });
                 input.value = '';
             };
@@ -757,6 +766,20 @@ class Bootstrap
                         question: question
                     })
                 }).then(function(res) {
+                    if (!res.ok) {
+                        statusEl.remove();
+                        textEl.style.color = '#B45309';
+                        if (res.status === 401) {
+                            textEl.textContent =
+                                '⚠ Authentication failed — COPILOT_SECRET mismatch. ' +
+                                'Ensure the secret in copilot/.env matches the OpenEMR module config.';
+                        } else {
+                            textEl.textContent =
+                                '⚠ Service error (HTTP ' + res.status + '). ' +
+                                'Run docker logs copilot-service for details.';
+                        }
+                        return;
+                    }
                     var reader  = res.body.getReader();
                     var decoder = new TextDecoder();
                     var buffer  = '';
@@ -793,7 +816,7 @@ class Bootstrap
                 }).catch(function() {
                     statusEl.remove();
                     textEl.style.color = '#B45309';
-                    textEl.textContent = '⚠ Connection error. Is the Co-Pilot service running?';
+                    diagnoseCopilotError(textEl);
                 });
             }
 
@@ -842,6 +865,40 @@ class Bootstrap
                     .replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;');
+            }
+
+            /* ──────────────────────────────────────────────────────
+               ERROR DIAGNOSIS
+               Calls /health (no auth) to determine the specific
+               cause of a connection or service failure.
+            ────────────────────────────────────────────────────── */
+            function diagnoseCopilotError(textEl) {
+                fetch(BASE + '/health')
+                    .then(function(r) { return r.json(); })
+                    .then(function(h) {
+                        if (h.checks && !h.checks.anthropic_key_set) {
+                            textEl.innerHTML =
+                                '⚠ <strong>ANTHROPIC_API_KEY</strong> is not set.<br>' +
+                                '<span style="font-size:11px;">Add it to <code>copilot/.env</code> ' +
+                                'and run <code>docker compose restart copilot-service</code>.</span>';
+                        } else if (h.checks && !h.checks.cohere_key_set) {
+                            textEl.innerHTML =
+                                '⚠ <strong>COHERE_API_KEY</strong> is not set.<br>' +
+                                '<span style="font-size:11px;">Add it to <code>copilot/.env</code> ' +
+                                'and run <code>docker compose restart copilot-service</code>.</span>';
+                        } else {
+                            textEl.innerHTML =
+                                '⚠ Service error. Run ' +
+                                '<code>docker logs copilot-service</code> to investigate.';
+                        }
+                    })
+                    .catch(function() {
+                        textEl.innerHTML =
+                            '⚠ Co-Pilot service is unreachable.<br>' +
+                            '<span style="font-size:11px;">Start it with ' +
+                            '<code>docker compose up</code> in ' +
+                            '<code>docker/development-easy/</code>.</span>';
+                    });
             }
 
             // Poll for current patient every 3 seconds

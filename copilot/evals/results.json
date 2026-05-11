@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-11T01:44:20Z",
+  "generated_at": "2026-05-11T08:07:19Z",
   "exit_code": 0,
   "note": "Static rule-based evals \u2014 no live API calls required. LLM judge tests skipped (mark: llm).",
   "summary": {
@@ -629,7 +629,7 @@
     {
       "test_id": "evals/test_eval.py::test_regression_gate[citation_present]",
       "outcome": "passed",
-      "duration_s": 0.0
+      "duration_s": 0.001
     },
     {
       "test_id": "evals/test_eval.py::test_regression_gate[factually_consistent]",
@@ -929,7 +929,7 @@
     {
       "test_id": "evals/test_hl7.py::TestFixtureFiles::test_all_adt_files_parse",
       "outcome": "passed",
-      "duration_s": 0.001
+      "duration_s": 0.0
     },
     {
       "test_id": "evals/test_hl7.py::TestFixtureFiles::test_no_phi_in_field_ids",
