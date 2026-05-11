@@ -33,6 +33,7 @@ services:
     volumes:
     - ${OPENEMR_DIR:-../..}:/openemr:ro
     - ${OPENEMR_DIR:-../..}:/var/www/localhost/htdocs/openemr:rw
+    - ./copilot-proxy.conf:/etc/apache2/conf.d/copilot-proxy.conf:ro
     - assetvolume:/var/www/localhost/htdocs/openemr/public/assets:rw
     - themevolume:/var/www/localhost/htdocs/openemr/public/themes:rw
     - sitesvolume:/var/www/localhost/htdocs/openemr/sites:rw

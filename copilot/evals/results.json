@@ -1,0 +1,940 @@
+{
+  "generated_at": "2026-05-11T01:44:20Z",
+  "exit_code": 0,
+  "note": "Static rule-based evals \u2014 no live API calls required. LLM judge tests skipped (mark: llm).",
+  "summary": {
+    "total": 184,
+    "passed": 148,
+    "failed": 0,
+    "skipped": 36
+  },
+  "rubric_gate_outcomes": {
+    "schema_valid": "passed",
+    "citation_present": "passed",
+    "factually_consistent": "passed",
+    "safe_refusal": "passed",
+    "no_phi_in_logs": "passed"
+  },
+  "cases": [
+    {
+      "test_id": "evals/test_coords.py::test_default_scale",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_page_geometry_scale",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_letter_page_dimensions",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_px_to_normalized_center",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_px_to_normalized_top_left",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_px_to_normalized_bottom_right",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_normalized_to_px_round_trip",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_normalized_to_px_round_trip_a4",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_px_to_pdf_pts_scale",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_pdf_pts_to_px_round_trip",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_full_page_pdf_pts",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_normalized_to_pdf_pts_round_trip",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_clamp_keeps_valid_bbox",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_clamp_negative_coords",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_clamp_overflow_coords",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_bbox_width_height",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_bbox_area",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_wrong_space_raises_for_px_to_norm",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_coords.py::test_wrong_space_raises_for_norm_to_px",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-001]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-002]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-003]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-004]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-005]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-006]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-007]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-008]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-009]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-010]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-011]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-012]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SV-013]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[CP-001]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[CP-002]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[CP-003]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[CP-004]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[CP-005]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[CP-006]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[CP-007]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[CP-008]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[FC-001]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[FC-002]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[FC-003]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[FC-004]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[FC-005]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[FC-006]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[FC-007]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[FC-008]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-001]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-002]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-003]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-004]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-005]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-006]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-007]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-008]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-009]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[SR-010]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-001]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-002]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-003]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-004]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-005]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-006]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-007]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-008]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-009]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-010]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-011]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_pass[PHI-012]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-001]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-002]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-003]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-004]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-005]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-006]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-007]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-008]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-009]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-010]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-011]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-012]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SV-013]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[CP-001]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[CP-002]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[CP-003]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[CP-004]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[CP-005]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[CP-006]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[CP-007]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[CP-008]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[FC-001]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[FC-002]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[FC-003]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[FC-004]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[FC-005]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[FC-006]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[FC-007]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[FC-008]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-001]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-002]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-003]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-004]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-005]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-006]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-007]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-008]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-009]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[SR-010]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-001]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-002]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-003]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-004]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-005]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-006]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-007]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-008]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-009]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-010]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-011]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_expected_rubrics_fail[PHI-012]",
+      "outcome": "skipped",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_regression_gate[schema_valid]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_regression_gate[citation_present]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_regression_gate[factually_consistent]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_regression_gate[safe_refusal]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_eval.py::test_regression_gate[no_phi_in_logs]",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestTokenizer::test_cr_only",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestTokenizer::test_lf_only",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestTokenizer::test_crlf",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestTokenizer::test_blank_lines_skipped",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestTokenizer::test_segment_name",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestTokenizer::test_field_access",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestTokenizer::test_component_access",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDateParsing::test_yyyymmdd",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDateParsing::test_yyyymmddhhmmss",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDateParsing::test_with_negative_timezone",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDateParsing::test_with_positive_timezone",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDateParsing::test_empty",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDateParsing::test_non_date_passthrough",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestHelpers::test_parse_name_full",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestHelpers::test_parse_name_no_middle",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestHelpers::test_parse_name_last_only",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestHelpers::test_parse_phone_standard",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestHelpers::test_parse_phone_missing_components",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestHelpers::test_parse_address_full",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestHelpers::test_parse_address_missing_components",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_result_count",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_first_result_fields",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_normal_flag",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_loinc_in_field_id",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_citation_source_type",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_citation_no_bbox",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_citation_transform_chain",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_citation_parser",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_msg_id_in_source_id",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_multi_panel_two_obr_groups",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_multi_panel_collection_dates_per_group",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_hh_flag_is_abnormal",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_skips_empty_value",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestOruR01::test_pydantic_validation",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_returns_intake_form",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_demographics_name",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_demographics_dob",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_demographics_sex",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_demographics_phone",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_demographics_address",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_chief_concern_from_evn",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_family_history_from_nk1",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_medications_empty",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_allergies_empty",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_citation_source_type",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_citation_no_bbox",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_citation_transform_chain",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_whitaker_male_sex",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_whitaker_chief_concern",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_no_nk1_empty_family_history",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestAdtA08::test_missing_evn_default_chief_concern",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDetectMessageType::test_oru_r01",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDetectMessageType::test_adt_a08",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDetectMessageType::test_unknown",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestDetectMessageType::test_no_msh_returns_unknown",
+      "outcome": "passed",
+      "duration_s": 0.0
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestFixtureFiles::test_all_oru_files_parse",
+      "outcome": "passed",
+      "duration_s": 0.001
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestFixtureFiles::test_all_adt_files_parse",
+      "outcome": "passed",
+      "duration_s": 0.001
+    },
+    {
+      "test_id": "evals/test_hl7.py::TestFixtureFiles::test_no_phi_in_field_ids",
+      "outcome": "passed",
+      "duration_s": 0.001
+    }
+  ]
+}

@@ -654,6 +654,55 @@ class Bootstrap
                     }
                     lines.push('<span style="font-size:10px;color:#22A86E;">✓ Data imported to chart</span>');
                     textEl.innerHTML = lines.join('<br>');
+
+                    // Overlay button — fetch annotated PNG from /v2/overlay when clicked
+                    var docId = data.doc_id;
+                    if (docId) {
+                        var overlayBtn = document.createElement('button');
+                        overlayBtn.textContent = '🔍 View bounding-box overlay';
+                        overlayBtn.style.cssText =
+                            'margin-top:8px;font-size:10px;background:#EBF4FB;border:1px solid #A8C8E8;' +
+                            'color:#2E6B9E;padding:3px 8px;border-radius:4px;cursor:pointer;' +
+                            'display:block;width:100%;text-align:left;';
+                        var overlayWrap = document.createElement('div');
+                        overlayWrap.style.cssText = 'margin-top:6px;display:none;';
+                        var overlayImg = document.createElement('img');
+                        overlayImg.style.cssText =
+                            'width:100%;border-radius:4px;border:1px solid #C9D5E0;display:block;';
+                        overlayImg.alt = 'Bounding-box overlay — extracted fields highlighted';
+                        overlayWrap.appendChild(overlayImg);
+                        responseBubble.appendChild(overlayBtn);
+                        responseBubble.appendChild(overlayWrap);
+
+                        overlayBtn.onclick = function() {
+                            if (overlayWrap.style.display === 'none') {
+                                if (!overlayImg.dataset.loaded) {
+                                    overlayBtn.textContent = '⋯ Loading overlay…';
+                                    fetch(BASE + '/v2/overlay/' + encodeURIComponent(docId) + '/0', {
+                                        headers: {'X-Copilot-Secret': SECRET}
+                                    }).then(function(res) {
+                                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                                        return res.blob();
+                                    }).then(function(blob) {
+                                        overlayImg.src = URL.createObjectURL(blob);
+                                        overlayImg.dataset.loaded = '1';
+                                        overlayWrap.style.display = 'block';
+                                        overlayBtn.textContent = '🔍 Hide overlay';
+                                        document.getElementById('copilot-messages').scrollTop = 99999;
+                                    }).catch(function() {
+                                        overlayBtn.textContent = '⚠ Overlay unavailable';
+                                    });
+                                } else {
+                                    overlayWrap.style.display = 'block';
+                                    overlayBtn.textContent = '🔍 Hide overlay';
+                                }
+                            } else {
+                                overlayWrap.style.display = 'none';
+                                overlayBtn.textContent = '🔍 View bounding-box overlay';
+                            }
+                        };
+                    }
+
                     document.getElementById('copilot-messages').scrollTop = 99999;
                 }).catch(function() {
                     statusEl.remove();

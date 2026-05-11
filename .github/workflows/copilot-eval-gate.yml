@@ -29,8 +29,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt pytest
 
-      - name: Run eval gate
-        run: python -m pytest evals/test_eval.py -v --tb=short
+      - name: Run eval gate (rule-based + LLM judge structure checks)
+        # LLM judge live tests are skipped (-m "not llm") — they need a real API key.
+        # The two always-run tests in test_llm_judge.py (prompt docs + stub-key error)
+        # still execute and block the PR if the judge is misconfigured.
+        run: python -m pytest evals/ -m "not llm" -v --tb=short
         env:
           # Rubric tests use static simulated data — no live API keys needed
           ANTHROPIC_API_KEY: "test-key-not-used-in-static-evals"
